@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Language / Sentiment Detector</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <div class="brand">
+            <div class="logo"></div>
+            <div>
+                <h1>Language / Sentiment Detector</h1>
+                <div class="sub">evt lav beskrive af hvad programmet kan og hvordan)</div>
+            </div>
+        </div>
+        <div class="sub">v1 • Spring Boot + Vanilla JS</div>
+    </header>
+
+    <div class="grid">
+        <!-- Detect language -->
+        <section class="card">
+            <h2>Find sprog</h2>
+            <p class="hint">Returnerer ISO 639-1 kode (fx <code>en</code>, <code>es</code>, <code>da</code>, <code>ru</code>).</p>
+            <form id="form-lang">
+                <div class="row">
+                    <textarea id="lang-text" placeholder="Skriv en tekst på valgfrit sprog..."></textarea>
+                </div>
+                <div class="actions">
+                    <button type="submit">Detektér sprog</button>
+                    <div id="spinner-lang" class="spinner"></div>
+                    <button type="button" class="secondary" onclick="document.getElementById('lang-text').value=''">Ryd</button>
+                </div>
+                <div id="result-lang" class="result"></div>
+            </form>
+            <div class="chips">
+                <span class="chip" data-fill-target="#lang-text" data-fill-text="Hola, ¿cómo estás?">Spansk eksempel</span>
+                <span class="chip" data-fill-target="#lang-text" data-fill-text="Здравствуйте, как дела?">Russisk eksempel</span>
+                <span class="chip" data-fill-target="#lang-text" data-fill-text="Hej verden!">Dansk eksempel</span>
+            </div>
+        </section>
+
+        <!-- Translate -->
+        <section class="card">
+            <h2>Oversæt</h2>
+            <p class="hint">Vælg målsprog. Output er kun den oversatte tekst.</p>
+            <form id="form-translate">
+                <div class="row">
+                    <textarea id="tr-text" placeholder="Tekst der skal oversættes..."></textarea>
+                </div>
+
+                <div class="row">
+                    <select id="tr-to">
+                        <!-- 50 SPROG -->
+                        <option value="">Vælg målsprog...</option>
+                        <option value="en">Engelsk (en)</option>
+                        <option value="es">Spansk (es)</option>
+                        <option value="zh">Kinesisk – Mandarin (zh)</option>
+                        <option value="hi">Hindi (hi)</option>
+                        <option value="ar">Arabisk (ar)</option>
+                        <option value="bn">Bengali (bn)</option>
+                        <option value="pt">Portugisisk (pt)</option>
+                        <option value="ru">Russisk (ru)</option>
+                        <option value="ja">Japansk (ja)</option>
+                        <option value="de">Tysk (de)</option>
+                        <option value="fr">Fransk (fr)</option>
+                        <option value="tr">Tyrkisk (tr)</option>
+                        <option value="ko">Koreansk (ko)</option>
+                        <option value="it">Italiensk (it)</option>
+                        <option value="pl">Polsk (pl)</option>
+                        <option value="uk">Ukrainsk (uk)</option>
+                        <option value="nl">Hollandsk (nl)</option>
+                        <option value="sv">Svensk (sv)</option>
+                        <option value="da">Dansk (da)</option>
+                        <option value="nb">Norsk Bokmål (nb)</option>
+                        <option value="fi">Finsk (fi)</option>
+                        <option value="cs">Tjekkisk (cs)</option>
+                        <option value="ro">Rumænsk (ro)</option>
+                        <option value="hu">Ungarsk (hu)</option>
+                        <option value="el">Græsk (el)</option>
+                        <option value="he">Hebraisk (he)</option>
+                        <option value="id">Indonesisk (id)</option>
+                        <option value="ms">Malay (ms)</option>
+                        <option value="th">Thai (th)</option>
+                        <option value="vi">Vietnamesisk (vi)</option>
+                        <option value="fa">Persisk (fa)</option>
+                        <option value="ur">Urdu (ur)</option>
+                        <option value="ta">Tamil (ta)</option>
+                        <option value="te">Telugu (te)</option>
+                        <option value="ml">Malayalam (ml)</option>
+                        <option value="mr">Marathi (mr)</option>
+                        <option value="gu">Gujarati (gu)</option>
+                        <option value="kn">Kannada (kn)</option>
+                        <option value="si">Sinhala (si)</option>
+                        <option value="sk">Slovakisk (sk)</option>
+                        <option value="sl">Slovensk (sl)</option>
+                        <option value="bg">Bulgarsk (bg)</option>
+                        <option value="sr">Serbisk (sr)</option>
+                        <option value="hr">Kroatisk (hr)</option>
+                        <option value="lt">Litauisk (lt)</option>
+                        <option value="lv">Lettisk (lv)</option>
+                        <option value="et">Estisk (et)</option>
+                        <option value="is">Islandsk (is)</option>
+                    </select>
+                </div>
+
+                <div class="actions">
+                    <button type="submit">Oversæt</button>
+                    <div id="spinner-tr" class="spinner"></div>
+                    <button type="button" class="secondary" onclick="document.getElementById('tr-text').value='';document.getElementById('tr-to').value=''">Ryd</button>
+                </div>
+                <div id="result-tr" class="result"></div>
+            </form>
+
+            <div class="chips">
+                <span class="chip"
+                      data-fill-target="#tr-text"
+                      data-fill-text="Hej, jeg hedder Mads. Hvordan går det?"
+                      data-setval-target="#tr-to"
+                      data-setval-value="en">
+                    Brug ‘da → en’
+                </span>
+            </div>
+        </section>
+
+        <!-- Sentiment -->
+        <section class="card">
+            <h2>Sentiment</h2>
+            <p class="hint">Returnerer kun: <strong>positive</strong>, <strong>neutral</strong> eller <strong>negative</strong>.</p>
+            <form id="form-sentiment">
+                <div class="row">
+                    <textarea id="sent-text" placeholder="Skriv en sætning, fx ‘Jeg elsker det her produkt!’"></textarea>
+                </div>
+                <div class="actions">
+                    <button type="submit">Analyser tone</button>
+                    <div id="spinner-sent" class="spinner"></div>
+                    <button type="button" class="secondary" onclick="document.getElementById('sent-text').value=''">Ryd</button>
+                </div>
+                <div id="result-sent" class="result"></div>
+            </form>
+            <div class="chips">
+                <span class="chip" data-fill-target="#sent-text" data-fill-text="This is absolutely amazing!">Positiv</span>
+                <span class="chip" data-fill-target="#sent-text" data-fill-text="It is okay, I guess.">Neutral</span>
+                <span class="chip" data-fill-target="#sent-text" data-fill-text="This is terrible and I hate it.">Negativ</span>
+            </div>
+        </section>
+
+        <!-- Analyze all -->
+        <section class="card">
+            <h2>Kombi: Sprog + Sentiment + Oversættelse</h2>
+            <p class="hint">
+                Får svar i tre linjer:<br/>
+                <code>lang:&lt;kode&gt;</code><br/>
+                <code>sentiment:&lt;ord&gt;</code><br/>
+                <code>translation:&lt;tekst&gt;</code>
+            </p>
+
+            <form id="form-analyze">
+                <div class="row">
+                    <textarea id="az-text" placeholder="Indsæt tekst til samlet analyse..."></textarea>
+                </div>
+
+                <div class="row">
+                    <select id="az-to">
+                        <!-- 50 SPROG -->
+                        <option value="">Vælg målsprog...</option>
+                        <option value="en">Engelsk (en)</option>
+                        <option value="es">Spansk (es)</option>
+                        <option value="zh">Kinesisk – Mandarin (zh)</option>
+                        <option value="hi">Hindi (hi)</option>
+                        <option value="ar">Arabisk (ar)</option>
+                        <option value="bn">Bengali (bn)</option>
+                        <option value="pt">Portugisisk (pt)</option>
+                        <option value="ru">Russisk (ru)</option>
+                        <option value="ja">Japansk (ja)</option>
+                        <option value="de">Tysk (de)</option>
+                        <option value="fr">Fransk (fr)</option>
+                        <option value="tr">Tyrkisk (tr)</option>
+                        <option value="ko">Koreansk (ko)</option>
+                        <option value="it">Italiensk (it)</option>
+                        <option value="pl">Polsk (pl)</option>
+                        <option value="uk">Ukrainsk (uk)</option>
+                        <option value="nl">Hollandsk (nl)</option>
+                        <option value="sv">Svensk (sv)</option>
+                        <option value="da">Dansk (da)</option>
+                        <option value="nb">Norsk Bokmål (nb)</option>
+                        <option value="fi">Finsk (fi)</option>
+                        <option value="cs">Tjekkisk (cs)</option>
+                        <option value="ro">Rumænsk (ro)</option>
+                        <option value="hu">Ungarsk (hu)</option>
+                        <option value="el">Græsk (el)</option>
+                        <option value="he">Hebraisk (he)</option>
+                        <option value="id">Indonesisk (id)</option>
+                        <option value="ms">Malay (ms)</option>
+                        <option value="th">Thai (th)</option>
+                        <option value="vi">Vietnamesisk (vi)</option>
+                        <option value="fa">Persisk (fa)</option>
+                        <option value="ur">Urdu (ur)</option>
+                        <option value="ta">Tamil (ta)</option>
+                        <option value="te">Telugu (te)</option>
+                        <option value="ml">Malayalam (ml)</option>
+                        <option value="mr">Marathi (mr)</option>
+                        <option value="gu">Gujarati (gu)</option>
+                        <option value="kn">Kannada (kn)</option>
+                        <option value="si">Sinhala (si)</option>
+                        <option value="sk">Slovakisk (sk)</option>
+                        <option value="sl">Slovensk (sl)</option>
+                        <option value="bg">Bulgarsk (bg)</option>
+                        <option value="sr">Serbisk (sr)</option>
+                        <option value="hr">Kroatisk (hr)</option>
+                        <option value="lt">Litauisk (lt)</option>
+                        <option value="lv">Lettisk (lv)</option>
+                        <option value="et">Estisk (et)</option>
+                        <option value="is">Islandsk (is)</option>
+                    </select>
+                </div>
+
+                <div class="actions">
+                    <button type="submit">Kør samlet analyse</button>
+                    <div id="spinner-az" class="spinner"></div>
+                    <button type="button" class="secondary" onclick="document.getElementById('az-text').value='';document.getElementById('az-to').value=''">Ryd</button>
+                </div>
+
+                <div id="result-az" class="result"></div>
+            </form>
+
+            <div class="chips">
+                <span class="chip"
+                      data-fill-target="#az-text"
+                      data-fill-text="Este producto es horrible"
+                      data-setval-target="#az-to"
+                      data-setval-value="en">
+                    Spansk → Engelsk
+                </span>
+                <span class="chip"
+                      data-fill-target="#az-text"
+                      data-fill-text="Det her spiller bare!"
+                      data-setval-target="#az-to"
+                      data-setval-value="en">
+                    Dansk → Engelsk
+                </span>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        Bygget til undervisning • Ingen cookies • Rate limit kan være aktiv
+    </footer>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
