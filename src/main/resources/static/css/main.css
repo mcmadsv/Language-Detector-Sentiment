@@ -112,8 +112,8 @@ button.secondary{
     min-height:42px;
     white-space:pre-wrap;
     word-break:break-word;
-    color:white;       /* ← tydelig, lys tekst */
-    font-weight:600;         /* ← gør “da” osv. lidt mere markant */
+    color:white;
+    font-weight:600;
 }
 
 .spinner{
