@@ -21,14 +21,10 @@ public class OpenAiService {
 
     private static final Logger log = LoggerFactory.getLogger(OpenAiService.class);
 
-    @Value("${app.api-key}")       private String apiKey;
-    @Value("${app.url}")           private String url;
-    @Value("${app.model}")         private String model;
-    @Value("${app.temperature}")   private double temperature;
-    @Value("${app.max_tokens}")    private int maxTokens;
-    @Value("${app.top_p}")         private double topP;
-    @Value("${app.frequency_penalty}") private double frequencyPenalty;
-    @Value("${app.presence_penalty}")  private double presencePenalty;
+    @Value("${app.api-key}") private String apiKey;
+    @Value("${app.url}")     private String url;
+    @Value("${app.model}")   private String model;
+    @Value("${app.temperature}") private double temperature;
 
     private final WebClient client = WebClient.create();
 
@@ -37,10 +33,6 @@ public class OpenAiService {
             ChatCompletionRequest req = new ChatCompletionRequest();
             req.setModel(model);
             req.setTemperature(temperature);
-            req.setMax_tokens(maxTokens);
-            req.setTop_p(topP);
-            req.setFrequency_penalty(frequencyPenalty);
-            req.setPresence_penalty(presencePenalty);
             req.getMessages().add(new ChatCompletionRequest.Message("system", systemMessage));
             req.getMessages().add(new ChatCompletionRequest.Message("user", userPrompt));
 
@@ -65,7 +57,7 @@ public class OpenAiService {
             log.error("OpenAI error {}: {}", e.getRawStatusCode(), e.getResponseBodyAsString());
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "External AI call failed. Check backend logs during development."
+                    "External AI call failed. Check backend logs."
             );
         } catch (Exception e) {
             log.error("Unexpected error", e);

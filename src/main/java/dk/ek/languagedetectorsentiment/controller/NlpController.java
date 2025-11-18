@@ -11,7 +11,6 @@ public class NlpController {
 
     private final OpenAiService service;
 
-    // SYSTEM PROMPTS (stramme, deterministiske)
 
     private static final String SYS_LANG =
             "You are a language identifier. "
@@ -44,9 +43,7 @@ public class NlpController {
         this.service = service;
     }
 
-    // -------------------------------------------------------------
-    // API ENDPOINTS
-    // -------------------------------------------------------------
+ 
 
     @GetMapping("/lang")
     public MyResponse detectLanguage(@RequestParam String text) {

@@ -25,7 +25,6 @@ async function insertLanguageSelector() {
       const clonedSelector = template.content.cloneNode(true);
       const select = clonedSelector.querySelector('.language-selector');
 
-      // Find den form containeren ligger i og giv select et id
       const form = container.closest('form');
       if (form && form.id === 'form-translate') {
         select.id = 'tr-to';
@@ -158,13 +157,11 @@ async function handleHttpErrors(res) {
   return res.json();
 }
 
-// Formular events
 document.getElementById('form-lang').addEventListener('submit', detectLang);
 document.getElementById('form-translate').addEventListener('submit', translateText);
 document.getElementById('form-sentiment').addEventListener('submit', detectSentiment);
 document.getElementById('form-analyze').addEventListener('submit', analyzeAll);
 
-// Chips
 document.querySelectorAll('.chip[data-fill-target]').forEach(chip => {
   chip.addEventListener('click', () => {
     const fillTarget = chip.dataset.fillTarget;
@@ -183,5 +180,4 @@ document.querySelectorAll('.chip[data-fill-target]').forEach(chip => {
   });
 });
 
-// Hent og indsæt sprog-komponenten
 insertLanguageSelector();
